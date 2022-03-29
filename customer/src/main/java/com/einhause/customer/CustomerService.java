@@ -25,10 +25,10 @@ public class CustomerService {
 
         // checking if customer is fraud
         FraudCheckHistoryResponse fraudCheckResponse = restTemplate.getForObject(
-                "http:localhost:8081/api/v1/fraud-check/{customerId}",
+                "http://localhost:8081/api/v1/fraud-check/{customerId}",
                 FraudCheckHistoryResponse.class,
                 customer.getId()
-        );git a
+        );
 
         if (fraudCheckResponse.customerIsFraud()) {
             throw new IllegalStateException("Illegal customer");
