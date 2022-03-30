@@ -1,10 +1,12 @@
 package com.einhause.customer;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Log4j2
 @Service
 @AllArgsConstructor
 public class CustomerService {
@@ -23,12 +25,14 @@ public class CustomerService {
 
         customerRepository.saveAndFlush(customer);
 
-        // checking if customer is fraud
+        // checking if customer is fraud using service discovery
         FraudCheckHistoryResponse fraudCheckResponse = restTemplate.getForObject(
-                "http://localhost:8081/api/v1/fraud-check/{customerId}",
+                "http://FRAUD/api/v1/fraud-check/{customerId}",
                 FraudCheckHistoryResponse.class,
                 customer.getId()
         );
+
+        log.info("Fraud check on customer {}", customer.getId());
 
         if (fraudCheckResponse.customerIsFraud()) {
             throw new IllegalStateException("Illegal customer");
